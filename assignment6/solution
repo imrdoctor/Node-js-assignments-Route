@@ -1,0 +1,75 @@
+--------------- 1 ---------------
+CREATE TABLE suppliers(
+    SupplierID INT AUTO_INCREMENT PRIMARY KEY
+);
+CREATE TABLE products(
+    SupplierID INT NOT NULL,
+    FOREIGN KEY (SupplierID) REFERENCES suppliers(SupplierID),
+    ProductID INT AUTO_INCREMENT PRIMARY KEY
+
+);
+CREATE TABLE sales(
+     ProductID INT NOT NULL,
+    FOREIGN KEY (ProductID) REFERENCES products(ProductID)
+)
+////////////////////
+--------------- 2 ---------------
+ALTER TABLE products
+ADD Category TEXT
+////////////////////
+--------------- 3 ---------------
+TRUNCATE TABLE sales;
+////////////////////
+--------------- 4 ---------------
+INSERT INTO `suppliers`(`SupplierName`, `ContactNumber`) VALUES ('Tech Supplies Co','123-456-7890')
+////////////////////
+--------------- 5 ---------------
+INSERT INTO `products`(`SupplierID`, `ProductName`, `Price`, `StockQuantity`) VALUES ('1','Smartphone','299.99','50')
+////////////////////
+--------------- 6 ---------------
+UPDATE `products` SET `Price`='349.99' WHERE `ProductID` = 1;
+////////////////////
+--------------- 7 ---------------
+SELECT 
+    p.ProductID,
+    p.ProductName,
+    SUM(s.QuantitySold) AS TotalQuantitySold,
+    SUM(s.QuantitySold * p.Price) AS TotalRevenue
+FROM 
+    products p
+LEFT JOIN 
+    sales s
+ON 
+    p.ProductID = s.ProductID
+GROUP BY 
+    p.ProductID, p.ProductName;
+////////////////////
+--------------- 8 ---------------
+SELECT 
+    COUNT(*) AS TotalSuppliers
+FROM 
+    suppliers;
+////////////////////
+
+
+
+
+
+
+
+
+
+
+--------------- SQL  ---------------
+ALTER TABLE suppliers
+ADD SupplierName VARCHAR(50),
+ADD ContactNumber VARCHAR(50);
+--------------------------------------------
+ALTER TABLE products
+ADD ProductName VARCHAR(50),
+ADD Price DECIMAL(10, 2),
+ADD StockQuantity INT;
+--------------------------------------------
+ALTER TABLE sales
+ADD COLUMN QuantitySold INT;
+////////////////////
