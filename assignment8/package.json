@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "express": "^4.21.2",
+    "mysql2": "^3.11.5",
+    "nodemon": "^3.1.9",
+    "sequelize": "^6.37.5"
+  },
+  "name": "assignment8",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
