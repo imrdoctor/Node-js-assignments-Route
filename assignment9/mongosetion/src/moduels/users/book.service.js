@@ -47,7 +47,7 @@ export const createCappedCollection = async (req, res) => {
         const db = mongoose.connection.db;
         await db.createCollection("logs", {
             capped: true,
-            size: 1048576  // Size of capped collection in bytes (1MB)
+            size: 1048576 
         });
         res.status(201).json({ msg: 'Capped collection "logs" created with a size limit of 1MB' });
     } catch (error) {
