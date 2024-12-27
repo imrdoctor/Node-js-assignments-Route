@@ -1,0 +1,129 @@
+---------------------- 1 --------------------------
+db.createCollection("books", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["title"],
+            properties: {
+                title: {
+                    bsonType: "string",
+                    description: "must be a string and is required",
+                },
+            },
+        },
+    },
+});
+-
+db.books.insertOne({ title: "Learning MongoDB" });
+---------------------- 2 --------------------------
+db.authors.insertOne({
+  name: "Ahmed Mohamed",
+  nationality: "Egypt",
+  birthdate: ISODate("1965-07-31T00:00:00Z")
+});
+---------------------- 3 --------------------------
+db.createCollection("logs", {
+  capped: true,
+  size: 1024 * 1024  
+});
+---------------------- 4 --------------------------
+db.books.createIndex({ title: 1 });
+---------------------- 5 --------------------------
+db.books.insertOne({
+  title: "The Great Gatsby",
+  author: "F. Scott Fitzgerald",
+  year: 1925
+});
+---------------------- 6 --------------------------
+db.books.insertMany([
+  {
+    title: "The Great Gatsby",
+    author: "F. Scott Fitzgerald",
+    author: "F. Scott Fitzgerald",
+    "genre": ["Science Fiction"]
+  },
+  {
+    title: "To Kill a Mockingbird",
+    author: "Harper Lee",
+    publishedDate: ISODate("1960-07-11T00:00:00Z")
+  },
+  {
+    title: "1984",
+    author: "George Orwell",
+    publishedDate: ISODate("1949-06-08T00:00:00Z")
+  }
+]);
+---------------------- 7 --------------------------
+db.logs.insertOne({
+  level: "info",
+  message: "Server started successfully",
+  timestamp: ISODate("2024-12-25T10:00:00Z")
+});
+---------------------- 8 --------------------------
+db.logs.insertOne({
+  book_id: "676c43b1ebf0b7784e4eeb86",
+  action: "borrowed.",
+});
+---------------------- 9 --------------------------
+db.books.updateOne(
+  { title: "Future" },
+  { $set: { publishedDate: ISODate("2022-01-01T00:00:00Z") } }
+);
+---------------------- 10 --------------------------
+db.books.find({
+  publishedDate: { 
+    $gte: ISODate("1990-01-01T00:00:00Z"), 
+    $lte: ISODate("2010-12-31T23:59:59Z") 
+  }
+});
+---------------------- 11 --------------------------
+db.books.find({
+  genre: { $in: ["Science Fiction"] }
+});
+---------------------- 12 --------------------------
+db.books.find({})
+.skip(2)
+.limit(3)
+.sort({ publishedDate: -1 });
+---------------------- 13 --------------------------
+db.books.find({
+  year: { $type: "int" }
+});
+---------------------- 14 --------------------------
+db.books.find({
+  genres: { $nin: ["Horror", "Science Fiction"] }
+});
+---------------------- 15 --------------------------
+db.books.deleteMany({ year: { $lt: 2000 } });
+---------------------- 16 --------------------------
+db.books.aggregate([
+  { $match: { year: { $gt: 2000 } } },
+  { $sort: { year: -1 } } 
+]);
+---------------------- 17 --------------------------
+db.books.aggregate([
+  { $match: { year: { $gt: 2000 } } },
+  { $project: { title: 1, author: 1, year: 1 } } 
+]);
+---------------------- 18 --------------------------
+db.books.aggregate([
+  { $unwind: "$genre" } 
+]);
+---------------------- 19 --------------------------
+db.books.aggregate([
+  {
+    $lookup: {
+      from: 'logs',  
+      localField: 'book_id', 
+      foreignField: 'book_id', 
+      as: 'bookLogs' 
+    }
+  },
+  {
+    $unwind: {
+      path: '$bookLogs',  
+      preserveNullAndEmptyArrays: true 
+    }
+  }
+]);
+---------------------- END --------------------------
